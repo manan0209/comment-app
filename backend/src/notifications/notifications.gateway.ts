@@ -7,7 +7,12 @@ import { Notification } from '../entities/notification.entity';
 @Injectable()
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000', 'http://frontend:3000'],
+    origin: [
+      'http://localhost:3000', 
+      'http://frontend:3000',
+      /\.railway\.app$/,  // Allow any Railway app domain
+      /\.onrender\.com$/  // Allow any Render app domain
+    ],
     credentials: true,
   },
 })
