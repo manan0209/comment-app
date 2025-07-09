@@ -1,0 +1,13 @@
+node_modules
+.env
+.env.local
+*.log
+.DS_Store
+dist
+build
+coverage
+Deployment_guide.md
+comment-app-apis.postman_collection.json
+comment-app-local.postman_environment.json
+render_deployment.md
+railway_deployment.md
