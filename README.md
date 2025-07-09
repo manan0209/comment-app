@@ -1,14 +1,14 @@
 # Comment App
 
-A full-stack comment platform featuring secure authentication, nested comments, real-time notifications, and a modern UI. The application is fully containerized using Docker and designed for production deployment.
+A full stack comment platform featuring secure authentication, nested comments, real time notifications, and a modern UI. The application is fully containerized using Docker and designed for production deployment.
 
 ## Features
 
-- JWT-based authentication
+- JWT based authentication
 - Nested comments with unlimited depth
-- Real-time notifications via WebSockets
-- Time-limited editing and soft delete/restore
-- Responsive dark-themed UI
+- Real time notifications via WebSockets
+- Time limited editing and soft delete/restore
+- Responsive dark themed UI
 - Rate limiting and input validation
 - Fully Dockerized (backend, frontend, database)
 
@@ -73,7 +73,7 @@ A full-stack comment platform featuring secure authentication, nested comments, 
 
 ## Environment Variables
 
-See `.env.production.template` for required variables. **Do not commit secrets to git.**
+See `.env.production.template` for required variables.
 
 ## Deployment Notes
 
