@@ -24,36 +24,35 @@ export class ModerationService {
   // Comprehensive word lists for different severity levels
   private readonly BANNED_WORDS = {
     high: [
-      // Hate speech and slurs - with variations
-      'nigger', 'nigga', 'n1gger', 'n1gga', 'nig', 'negro', 'negr0',
+      // Hate speech and slurs - with variations (removed very short words)
+      'nigger', 'nigga', 'n1gger', 'n1gga', 'negro', 'negr0',
       'fuck', 'fck', 'fuk', 'f*ck', 'f**k', 'fucker', 'fcker', 'fukr', 'f*cker',
       'shit', 'sht', 'sh1t', 'shyt', 'shiit', 'shitt',
       'bitch', 'btch', 'b1tch', 'biatch', 'beetch', 'bytch',
       'whore', 'wh0re', 'hore', 'who-re', 'w.h.o.r.e',
       'slut', 'sl*t', 'sloot', 'sluut', 's1ut',
       'cunt', 'cnt', 'c*nt', 'c**t', 'cnut',
-      'dick', 'dck', 'd1ck', 'dik', 'dich', 'dic',
+      'dick', 'dck', 'd1ck', 'dich',
       'cock', 'cok', 'c0ck', 'cck', 'coock',
       'pussy', 'psy', 'p*ssy', 'puss', 'pussi',
-      'ass', 'azz', 'a$$', 'a55', 'arse', 'asshole', 'a$$hole',
-      'damn', 'dam', 'dayum', 'daam', 'dmn',
+      'asshole', 'a$$hole', 'ashole', 'azhole',
+      'damn', 'dayum', 'daam',
       
       // Violence and threats
       'kill', 'kil', 'k1ll', 'kyll', 'murder', 'mrder', 'murd3r',
-      'death', 'deth', 'deeth', 'die', 'dye', 'd1e',
+      'death', 'deth', 'deeth',
       'suicide', 'suicid', 'suic1de', 'kill yourself', 'kys',
       'rape', 'r4pe', 'rap3', 'raape', 'r@pe',
       'violence', 'violent', 'v1olence', 'violenc',
       'terrorist', 'terror', 'terr0r', 'terrorism',
       'bomb', 'b0mb', 'bo-mb', 'boom', 'explode',
-      'weapon', 'weap0n', 'gun', 'gn', 'guns',
-      'shoot', 'sh00t', 'shot', 'shooting',
+      'weapon', 'weap0n', 'guns', 'shooting',
       
       // Drugs
-      'drug', 'drugs', 'dr*g', 'dr*gs', 'drugg',
+      'drugs', 'dr*g', 'dr*gs', 'drugg',
       'cocaine', 'coke', 'c0caine', 'cocain', 'crack',
       'heroin', 'hero1n', 'heroine', 'smack',
-      'marijuana', 'weed', 'w33d', 'pot', 'ganja',
+      'marijuana', 'weed', 'w33d', 'ganja',
       'meth', 'crystal', 'speed', 'amphetamine',
       
       // Hate groups
@@ -63,18 +62,18 @@ export class ModerationService {
       
       // Spam related
       'spam', 'sp4m', 'spaam', 'scam', 'sc4m', 'fraud', 'fr4ud',
-      'phishing', 'ph1shing', 'fake', 'f4ke', 'bot', 'b0t'
+      'phishing', 'ph1shing', 'fake', 'f4ke'
     ],
     medium: [
       // Insults and offensive language
       'stupid', 'stup1d', 'stoopid', 'stuupid', 'st*pid',
       'idiot', '1diot', 'idi0t', 'idyot', 'id10t',
       'moron', 'm0ron', 'mor0n', 'moronix', 'moronic',
-      'dumb', 'dum', 'dumb4ss', 'dumba$$', 'dumbo',
+      'dumb', 'dumb4ss', 'dumba$$', 'dumbo',
       'retard', 'ret4rd', 'retarded', 'r3tard', 'tard',
       'loser', 'l0ser', 'looser', 'lozr', 'luser',
       'ugly', 'ugl1', 'uglee', 'uggly', 'fugly',
-      'fat', 'f4t', 'obese', '0bese', 'fatass', 'fatso',
+      'obese', '0bese', 'fatass', 'fatso',
       'worthless', 'w0rthless', 'useless', 'us3less',
       'pathetic', 'path3tic', 'pathethic', 'lame',
       'disgusting', 'disgust1ng', 'gross', 'gr0ss',
@@ -84,9 +83,9 @@ export class ModerationService {
     low: [
       // Mild profanity
       'crap', 'cr4p', 'crapp', 'crep',
-      'suck', 'sucks', 'sux', 'sukz', 'suckz',
+      'suck', 'sucks', 'suckz',
       'piss', 'p1ss', 'pissed', 'pist',
-      'hell', 'hel', 'h3ll', 'heel',
+      'hell', 'h3ll',
       'annoying', 'ann0ying', 'irritating',
       'boring', 'b0ring', 'bor1ng', 'booring',
       'lame', 'l4me', 'lamee', 'lamer'
@@ -108,51 +107,72 @@ export class ModerationService {
   };
 
   private readonly SPAM_PATTERNS = [
-    /(.)\1{4,}/g, // Repeated characters (aaaaa)
-    /\b\d{10,}\b/g, // Long numbers (phone numbers)
-    /\b[A-Z]{5,}\b/g, // EXCESSIVE CAPS
+    /(.)\1{6,}/g, // Repeated characters (aaaaaaa) - increased threshold
+    /\b\d{12,}\b/g, // Long numbers (very long phone numbers) - increased threshold
+    /\b[A-Z]{8,}\b/g, // EXCESSIVE CAPS - increased threshold
     /(https?:\/\/[^\s]+)/g, // URLs
     /\b(www\.|\.com|\.org|\.net|\.info|\.biz)\b/gi, // Domain patterns
-    /\b(buy|sell|cheap|free|click|visit|download|earn|money|cash|prize|winner|congratulations)\b/gi, // Spam words
-    /\b(viagra|cialis|pharmacy|pills|medication|prescription)\b/gi, // Pharmaceutical spam
-    /\b(lottery|casino|gambling|poker|slots|bet)\b/gi, // Gambling spam
-    /\b(work from home|make money|get rich|investment|cryptocurrency|bitcoin)\b/gi, // Financial spam
-    /\b(dating|hookup|singles|meet|chat|cam|webcam)\b/gi, // Dating spam
-    /[^\w\s]{3,}/g, // Excessive special characters
-    /\b(\w)\1{2,}\b/g, // Repeated letters in words (hellooo)
-    /\b[0-9]{3,}\b.*\b[0-9]{3,}\b/g, // Multiple number groups
-    /([.!?])\1{2,}/g, // Repeated punctuation
-    /\b(like|subscribe|follow|share|comment|upvote|downvote)\b.*\b(for|to|and|get|win|free)\b/gi, // Social media spam
+    /\b(buy now|sell now|cheap|free download|click here|visit now|earn money|cash prize|winner|congratulations you|urgent|limited time)\b/gi, // More specific spam words
+    /\b(viagra|cialis|pharmacy|pills|medication|prescription|enhancement)\b/gi, // Pharmaceutical spam
+    /\b(lottery winner|casino bonus|gambling|poker|slots|bet now)\b/gi, // Gambling spam
+    /\b(work from home|make money fast|get rich quick|investment opportunity|cryptocurrency|bitcoin mining)\b/gi, // Financial spam
+    /\b(dating site|hookup|singles|meet now|chat now|cam|webcam)\b/gi, // Dating spam
+    /[^\w\s]{5,}/g, // Excessive special characters - increased threshold
+    /\b(\w)\1{4,}\b/g, // Repeated letters in words (helloooo) - increased threshold
+    /\b[0-9]{4,}\b.*\b[0-9]{4,}\b/g, // Multiple number groups - increased threshold
+    /([.!?])\1{4,}/g, // Repeated punctuation - increased threshold
+    /\b(like and subscribe|follow and share|comment below|upvote this|downvote)\b.*\b(for free|to win|and get|bonus|prize)\b/gi, // Social media spam
   ];
 
   // Apply character substitutions to normalize text
   private applyCharacterSubstitutions(text: string): string {
     let normalized = text.toLowerCase();
     
-    // Apply character substitutions
-    for (const [original, substitutes] of Object.entries(this.CHAR_SUBSTITUTIONS)) {
-      for (const substitute of substitutes) {
-        const regex = new RegExp(substitute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-        normalized = normalized.replace(regex, original);
-      }
-    }
+    // Only apply substitutions in specific contexts to avoid false positives
+    // Be more conservative with substitutions
     
-    // Remove common separators used to bypass filters
-    normalized = normalized.replace(/[._\-+*#@!$%^&(){}[\]|\\:;"'<>?/~`]/g, '');
+    // Handle obvious leetspeak patterns
+    normalized = normalized.replace(/sh1t/g, 'shit');
+    normalized = normalized.replace(/f\*ck/g, 'fuck');
+    normalized = normalized.replace(/f\*\*k/g, 'fuck');
+    normalized = normalized.replace(/b1tch/g, 'bitch');
+    normalized = normalized.replace(/a\$\$/g, 'ass');
+    normalized = normalized.replace(/a\$\$h0le/g, 'asshole');
+    normalized = normalized.replace(/wh0re/g, 'whore');
+    normalized = normalized.replace(/sl\*t/g, 'slut');
+    normalized = normalized.replace(/c\*nt/g, 'cunt');
+    normalized = normalized.replace(/d1ck/g, 'dick');
+    normalized = normalized.replace(/c0ck/g, 'cock');
+    normalized = normalized.replace(/n1gg/g, 'nigg');
+    normalized = normalized.replace(/r4pe/g, 'rape');
+    normalized = normalized.replace(/k1ll/g, 'kill');
+    normalized = normalized.replace(/murd3r/g, 'murder');
+    normalized = normalized.replace(/b0mb/g, 'bomb');
+    normalized = normalized.replace(/dr\*g/g, 'drug');
+    normalized = normalized.replace(/n4zi/g, 'nazi');
+    normalized = normalized.replace(/h1tler/g, 'hitler');
+    normalized = normalized.replace(/stup1d/g, 'stupid');
+    normalized = normalized.replace(/1diot/g, 'idiot');
+    normalized = normalized.replace(/ret4rd/g, 'retard');
+    normalized = normalized.replace(/l0ser/g, 'loser');
+    normalized = normalized.replace(/p1ss/g, 'piss');
+    normalized = normalized.replace(/cr4p/g, 'crap');
+    normalized = normalized.replace(/h3ll/g, 'hell');
+    
+    // Handle common separators used to bypass filters, but be more careful
+    normalized = normalized.replace(/([a-z])[._\-+*#@!$%^&(){}[\]|\\:;"'<>?/~`]+([a-z])/g, '$1$2');
     
     // Remove excessive whitespace
     normalized = normalized.replace(/\s+/g, ' ');
     
-    // Handle additional leetspeak patterns
-    normalized = normalized.replace(/h8/g, 'hate');
-    normalized = normalized.replace(/gr8/g, 'great');
-    normalized = normalized.replace(/w8/g, 'wait');
-    normalized = normalized.replace(/m8/g, 'mate');
-    normalized = normalized.replace(/u/g, 'you');
-    normalized = normalized.replace(/ur/g, 'your');
-    normalized = normalized.replace(/b4/g, 'before');
-    normalized = normalized.replace(/2/g, 'to');
-    normalized = normalized.replace(/4/g, 'for');
+    // Handle specific leetspeak patterns that are commonly used
+    normalized = normalized.replace(/\bh8\b/g, 'hate');
+    normalized = normalized.replace(/\bkys\b/g, 'kill yourself');
+    normalized = normalized.replace(/\bwtf\b/g, 'what the fuck');
+    normalized = normalized.replace(/\bstfu\b/g, 'shut the fuck up');
+    normalized = normalized.replace(/\bfml\b/g, 'fuck my life');
+    normalized = normalized.replace(/\bomg\b/g, 'oh my god');
+    normalized = normalized.replace(/\bffs\b/g, 'for fucks sake');
     
     return normalized.trim();
   }
@@ -165,34 +185,46 @@ export class ModerationService {
     for (const word of bannedWords) {
       const normalizedWord = this.applyCharacterSubstitutions(word);
       
-      // Check exact match
-      if (normalizedContent.includes(normalizedWord)) {
+      // Only check words that are at least 3 characters long to avoid false positives
+      if (normalizedWord.length < 3) continue;
+      
+      // Check for whole word matches only using word boundaries
+      const wordBoundaryRegex = new RegExp(`\\b${normalizedWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      if (wordBoundaryRegex.test(normalizedContent)) {
         flaggedWords.push(word);
         continue;
       }
       
-      // Check for spaced out words (f u c k)
-      const spacedWord = normalizedWord.split('').join(' ');
-      if (normalizedContent.includes(spacedWord)) {
-        flaggedWords.push(word);
-        continue;
-      }
-      
-      // Check for words with extra characters (fuuuuck)
-      const wordPattern = normalizedWord.split('').join('+');
-      const regex = new RegExp(wordPattern, 'gi');
-      if (regex.test(normalizedContent)) {
-        flaggedWords.push(word);
-        continue;
-      }
-      
-      // Check for fuzzy matching (allowing 1-2 character differences)
-      const words = normalizedContent.split(' ');
-      for (const contentWord of words) {
-        if (this.calculateLevenshteinDistance(contentWord, normalizedWord) <= 2 && 
-            normalizedWord.length > 3) {
+      // Check for spaced out words (f u c k) - only for longer words
+      if (normalizedWord.length >= 4) {
+        const spacedWord = normalizedWord.split('').join('\\s*');
+        const spacedRegex = new RegExp(`\\b${spacedWord}\\b`, 'gi');
+        if (spacedRegex.test(normalizedContent)) {
           flaggedWords.push(word);
-          break;
+          continue;
+        }
+      }
+      
+      // Check for words with extra characters (fuuuuck) - only for longer words
+      if (normalizedWord.length >= 4) {
+        const stretchedPattern = normalizedWord.split('').map(char => `${char}+`).join('');
+        const stretchedRegex = new RegExp(`\\b${stretchedPattern}\\b`, 'gi');
+        if (stretchedRegex.test(normalizedContent)) {
+          flaggedWords.push(word);
+          continue;
+        }
+      }
+      
+      // Only use fuzzy matching for longer words and with stricter criteria
+      if (normalizedWord.length >= 5) {
+        const words = normalizedContent.split(/\s+/);
+        for (const contentWord of words) {
+          if (contentWord.length >= 4 && 
+              this.calculateLevenshteinDistance(contentWord, normalizedWord) <= 1 && 
+              Math.abs(contentWord.length - normalizedWord.length) <= 2) {
+            flaggedWords.push(word);
+            break;
+          }
         }
       }
     }
@@ -248,7 +280,7 @@ export class ModerationService {
 
     // Check for spam patterns
     const spamScore = this.calculateSpamScore(content);
-    if (spamScore > 0.8) { // Increased threshold from 0.7
+    if (spamScore > 0.9) { // Increased threshold to be less aggressive
       flaggedWords.push('spam-pattern');
       severity = 'high';
     }
@@ -257,9 +289,9 @@ export class ModerationService {
     const userRisk = await this.getUserRiskLevel(userId);
     
     // Determine action based on severity and user history
-    if (flaggedWords.length > 0 || spamScore > 0.8) { // Updated threshold
+    if (flaggedWords.length > 0 || spamScore > 0.9) { // Updated threshold
       if (severity === 'high' || userRisk === 'high') {
-        action = flaggedWords.length > 2 ? 'ban' : 'block';
+        action = flaggedWords.length > 3 ? 'ban' : 'block'; // Increased threshold
       } else if (severity === 'medium' || userRisk === 'medium') {
         action = 'warn';
       }
@@ -269,7 +301,7 @@ export class ModerationService {
     let reason: string | undefined;
     if (flaggedWords.length > 0) {
       reason = `Flagged words: ${flaggedWords.join(', ')}`;
-    } else if (spamScore > 0.8) { // Updated threshold
+    } else if (spamScore > 0.9) { // Updated threshold
       reason = 'Content detected as spam';
     }
 
@@ -287,30 +319,32 @@ export class ModerationService {
     let score = 0;
     const length = content.length;
 
-    // Check spam patterns
+    // Check spam patterns - be more conservative
     for (const pattern of this.SPAM_PATTERNS) {
       const matches = content.match(pattern);
       if (matches) {
-        score += matches.length * 0.15; // Reduced from 0.2
+        score += matches.length * 0.1; // Further reduced from 0.15
       }
     }
 
-    // Check for excessive repetition
+    // Check for excessive repetition - be more lenient
     const words = content.split(' ');
     const uniqueWords = new Set(words);
-    if (words.length > 1) { // Avoid division by zero
+    if (words.length > 5) { // Only check if there are more than 5 words
       const repetitionRatio = 1 - (uniqueWords.size / words.length);
-      score += repetitionRatio * 0.2; // Reduced from 0.3
+      if (repetitionRatio > 0.6) { // Only penalize if more than 60% repetition
+        score += repetitionRatio * 0.15; // Further reduced from 0.2
+      }
     }
 
-    // Check for excessive length (be more lenient)
-    if (length > 2000) score += 0.1;
-    if (length > 5000) score += 0.2;
+    // Check for excessive length - be more lenient
+    if (length > 3000) score += 0.1; // Increased threshold
+    if (length > 6000) score += 0.2; // Increased threshold
 
-    // Check for excessive caps (be more lenient)
-    if (length > 0) {
+    // Check for excessive caps - be more lenient
+    if (length > 10) { // Only check if content has more than 10 characters
       const capsRatio = (content.match(/[A-Z]/g) || []).length / length;
-      if (capsRatio > 0.5) score += 0.2; // Increased threshold from 0.3
+      if (capsRatio > 0.7) score += 0.15; // Increased threshold and reduced penalty
     }
 
     return Math.min(score, 1);
