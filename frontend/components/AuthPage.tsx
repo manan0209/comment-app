@@ -4,8 +4,6 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LoadingSpinner } from './LoadingSpinner';
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
 import toast from 'react-hot-toast';
 
 interface LoginForm {
@@ -18,13 +16,6 @@ interface RegisterForm {
   email: string;
   password: string;
   confirmPassword: string;
-}
-
-interface GoogleJwtPayload {
-  email: string;
-  name: string;
-  picture: string;
-  sub: string;
 }
 
 export const AuthPage = () => {
@@ -63,39 +54,13 @@ export const AuthPage = () => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    try {
-      setLoading(true);
-      
-      // Decode the JWT token from Google
-      const decoded = jwtDecode<GoogleJwtPayload>(credentialResponse.credential);
-      
-      // Extract username from email (before @ symbol)
-      const username = decoded.email.split('@')[0];
-      
-      // Try to register first (in case it's a new user)
-      try {
-        await register(username, decoded.email, `google_${decoded.sub}`);
-        toast.success('🎉 Welcome to Hack Club!');
-      } catch (registerError: any) {
-        // If user already exists, try to login
-        if (registerError.response?.status === 409) {
-          await login(decoded.email, `google_${decoded.sub}`);
-          toast.success('🚀 Welcome back to Hack Club!');
-        } else {
-          throw registerError;
-        }
-      }
-    } catch (error: any) {
-      console.error('Google login error:', error);
-      toast.error('Failed to sign in with Google. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleError = () => {
-    toast.error('Google sign-in was cancelled');
+  const handleSlackAuth = () => {
+    // Redirect to Slack OAuth
+    const slackClientId = process.env.NEXT_PUBLIC_SLACK_CLIENT_ID;
+    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/slack/callback`);
+    const scope = encodeURIComponent('identity.basic identity.email identity.avatar');
+    
+    window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${slackClientId}&scope=${scope}&redirect_uri=${redirectUri}`;
   };
 
   return (
@@ -103,13 +68,13 @@ export const AuthPage = () => {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-hack-primary to-hack-secondary rounded-2xl mb-6 shadow-lg animate-bounce-in">
-            <span className="text-3xl font-bold text-white">HC</span>
+            <span className="text-3xl font-bold text-white">SC</span>
           </div>
           <h1 className="text-4xl font-bold text-hack-text mb-2">
-            <span className="text-hack-primary">Hack</span>Club
+            <span className="text-hack-primary">Secret</span>Club
           </h1>
           <p className="text-hack-textSecondary text-lg">
-            Where amazing things get built
+            Where amazing teens build together
           </p>
         </div>
 
@@ -186,10 +151,7 @@ export const AuthPage = () => {
                     <span>Signing in...</span>
                   </div>
                 ) : (
-                  <span className="flex items-center space-x-2">
-                    <span>Sign In</span>
-                    <span className="text-lg">🚀</span>
-                  </span>
+                  <span>Sign In</span>
                 )}
               </button>
 
@@ -203,19 +165,25 @@ export const AuthPage = () => {
                 </div>
               </div>
 
-              {/* Google Sign-In */}
-              <div className="w-full">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={handleGoogleError}
-                  useOneTap={false}
-                  theme="filled_blue"
-                  size="large"
-                  shape="rectangular"
-                  width="100%"
-                  text="signin_with"
-                />
-              </div>
+              {/* Slack Sign-In */}
+              <button
+                type="button"
+                onClick={handleSlackAuth}
+                disabled={loading}
+                className="w-full py-3 px-6 bg-slack-purple hover:bg-slack-purple/90 text-white font-bold rounded-xl focus:outline-none focus:ring-2 focus:ring-slack-purple focus:ring-offset-2 focus:ring-offset-hack-surface disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-2"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52-2.523A2.528 2.528 0 0 1 5.042 10.12h2.52v2.522a2.528 2.528 0 0 1-2.52 2.523z"/>
+                  <path d="M6.313 15.165a2.528 2.528 0 0 1 2.521-2.523 2.528 2.528 0 0 1 2.521 2.523v6.333A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.502v-6.333z"/>
+                  <path d="M8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834z"/>
+                  <path d="M8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312z"/>
+                  <path d="M18.956 8.834a2.528 2.528 0 0 1 2.522 2.521 2.528 2.528 0 0 1-2.522 2.521h-2.521V8.834h2.521z"/>
+                  <path d="M17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.528 2.528 0 0 1-2.521-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312z"/>
+                  <path d="M15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.528 2.528 0 0 1-2.521-2.522v-2.522h2.521z"/>
+                  <path d="M15.165 17.688a2.528 2.528 0 0 1-2.521-2.523 2.528 2.528 0 0 1 2.521-2.521h6.333A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.502 2.523h-6.333z"/>
+                </svg>
+                <span>Sign in with Slack</span>
+              </button>
             </form>
           ) : (
             <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-6">
@@ -310,10 +278,7 @@ export const AuthPage = () => {
                     <span>Creating account...</span>
                   </div>
                 ) : (
-                  <span className="flex items-center space-x-2">
-                    <span>Join Hack Club</span>
-                    <span className="text-lg">✨</span>
-                  </span>
+                  <span>Join Secret Club</span>
                 )}
               </button>
 
@@ -327,19 +292,25 @@ export const AuthPage = () => {
                 </div>
               </div>
 
-              {/* Google Sign-In */}
-              <div className="w-full">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={handleGoogleError}
-                  useOneTap={false}
-                  theme="filled_blue"
-                  size="large"
-                  shape="rectangular"
-                  width="100%"
-                  text="signup_with"
-                />
-              </div>
+              {/* Slack Sign-In */}
+              <button
+                type="button"
+                onClick={handleSlackAuth}
+                disabled={loading}
+                className="w-full py-3 px-6 bg-slack-purple hover:bg-slack-purple/90 text-white font-bold rounded-xl focus:outline-none focus:ring-2 focus:ring-slack-purple focus:ring-offset-2 focus:ring-offset-hack-surface disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-2"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52-2.523A2.528 2.528 0 0 1 5.042 10.12h2.52v2.522a2.528 2.528 0 0 1-2.52 2.523z"/>
+                  <path d="M6.313 15.165a2.528 2.528 0 0 1 2.521-2.523 2.528 2.528 0 0 1 2.521 2.523v6.333A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.502v-6.333z"/>
+                  <path d="M8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834z"/>
+                  <path d="M8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312z"/>
+                  <path d="M18.956 8.834a2.528 2.528 0 0 1 2.522 2.521 2.528 2.528 0 0 1-2.522 2.521h-2.521V8.834h2.521z"/>
+                  <path d="M17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.528 2.528 0 0 1-2.521-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312z"/>
+                  <path d="M15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.528 2.528 0 0 1-2.521-2.522v-2.522h2.521z"/>
+                  <path d="M15.165 17.688a2.528 2.528 0 0 1-2.521-2.523 2.528 2.528 0 0 1 2.521-2.521h6.333A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.502 2.523h-6.333z"/>
+                </svg>
+                <span>Sign up with Slack</span>
+              </button>
             </form>
           )}
         </div>
@@ -348,20 +319,17 @@ export const AuthPage = () => {
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center space-x-6 text-hack-textSecondary">
             <a href="#" className="hover:text-hack-primary transition-colors flex items-center space-x-1">
-              <span>🌟</span>
               <span>Projects</span>
             </a>
             <a href="#" className="hover:text-hack-primary transition-colors flex items-center space-x-1">
-              <span>🎯</span>
               <span>Hackathons</span>
             </a>
             <a href="#" className="hover:text-hack-primary transition-colors flex items-center space-x-1">
-              <span>🤝</span>
               <span>Community</span>
             </a>
           </div>
           <p className="text-sm text-hack-textSecondary">
-            Made with ❤️ by the Hack Club community
+            Made with love by the Secret Club community
           </p>
         </div>
       </div>

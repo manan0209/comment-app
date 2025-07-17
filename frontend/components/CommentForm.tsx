@@ -31,7 +31,7 @@ export const CommentForm = ({
   onCommentCreated,
   parentId,
   onCancel,
-  placeholder = "What are you building? 🔥",
+  placeholder = "What are you building?",
 }: CommentFormProps) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -81,7 +81,7 @@ export const CommentForm = ({
         onCancel();
       }
       
-      toast.success('🚀 Shipped!');
+      toast.success('Shipped!');
     } catch (error: any) {
       const message = error.response?.data?.message || 'Failed to post message';
       toast.error(message);

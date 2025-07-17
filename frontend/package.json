@@ -11,7 +11,7 @@
   "dependencies": {
     "@google-cloud/storage": "^7.16.0",
     "@heroicons/react": "^2.0.18",
-    "@react-oauth/google": "^0.12.2",
+    "@slack/oauth": "^3.0.3",
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
     "google-auth-library": "^10.1.0",

@@ -122,27 +122,28 @@ export const CommentApp = () => {
     <div className="min-h-screen bg-hack-bg">
       <Header />
       
+      {/* Main content area that works alongside the header */}
       <div className="flex">
-        {/* Left spacer (matches header sidebar) */}
+        {/* Left spacer for header sidebar */}
         <div className="w-72 flex-shrink-0" />
         
-        {/* Main content */}
-        <div className="flex-1 min-h-screen border-r border-hack-border">
+        {/* Messages section */}
+        <div className="flex-1 min-w-0 border-r border-hack-border">
           {/* Message composer */}
           <div className="border-b border-hack-border">
             <CommentForm onCommentCreated={handleCommentCreated} />
           </div>
 
           {/* Messages feed */}
-          <div>
+          <div className="min-h-screen">
             {comments.length === 0 ? (
               <div className="text-center py-20">
                 <div className="max-w-md mx-auto">
                   <div className="w-20 h-20 bg-gradient-to-br from-hack-primary to-hack-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 animate-bounce-in">
-                    <span className="text-3xl">🚀</span>
+                    <span className="text-3xl font-bold text-white">SC</span>
                   </div>
                   <h3 className="text-2xl font-bold text-hack-text mb-3">
-                    Welcome to <span className="text-hack-primary">Hack</span>Club #general!
+                    Welcome to <span className="text-hack-primary">Secret</span>Club #general!
                   </h3>
                   <p className="text-hack-textSecondary mb-6 leading-relaxed">
                     This is the beginning of something awesome. Share your projects, 
@@ -151,7 +152,7 @@ export const CommentApp = () => {
                   <div className="flex items-center justify-center space-x-4 text-sm text-hack-textSecondary">
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-hack-success rounded-full animate-pulse"></div>
-                      <span>Safe space for all hackers</span>
+                      <span>Safe space for teen builders</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-hack-accent rounded-full animate-pulse"></div>
@@ -200,16 +201,16 @@ export const CommentApp = () => {
         </div>
 
         {/* Right sidebar */}
-        <div className="w-80 flex-shrink-0 p-6 border-l border-hack-border bg-hack-surface/30">
-          <div className="sticky top-24 space-y-6">
-            {/* Active hackers */}
+        <div className="w-80 flex-shrink-0 bg-hack-surface/30 overflow-y-auto max-h-screen">
+          <div className="p-6 space-y-6">
+            {/* Active builders */}
             <div className="bg-hack-surface rounded-xl p-4 border border-hack-border">
               <h3 className="text-lg font-bold text-hack-text mb-4 flex items-center space-x-2">
                 <div className="w-3 h-3 bg-hack-success rounded-full animate-pulse"></div>
-                <span>Active Hackers</span>
+                <span>Active Builders</span>
               </h3>
               <div className="space-y-3">
-                {['alice', 'bob', 'charlie', 'diana', 'eve'].map((name, index) => (
+                {['alex', 'jordan', 'taylor', 'casey', 'river'].map((name, index) => (
                   <div key={name} className="flex items-center space-x-3 hover:bg-hack-border/30 rounded-lg p-2 transition-colors cursor-pointer">
                     <div className={`w-8 h-8 bg-gradient-to-br from-hack-primary to-hack-secondary rounded-lg flex items-center justify-center`}>
                       <span className="text-hack-text text-sm font-bold">
@@ -234,38 +235,38 @@ export const CommentApp = () => {
             {/* Trending projects */}
             <div className="bg-hack-surface rounded-xl p-4 border border-hack-border">
               <h3 className="text-lg font-bold text-hack-text mb-4 flex items-center space-x-2">
-                <span className="text-hack-secondary">🔥</span>
+                <span className="text-hack-secondary font-bold">HOT</span>
                 <span>Trending Projects</span>
               </h3>
               <div className="space-y-3">
                 <div className="hover:bg-hack-border/30 rounded-lg p-3 cursor-pointer transition-colors">
-                  <h4 className="font-bold text-hack-text">Orpheus Radio</h4>
+                  <h4 className="font-bold text-hack-text">Teen AI Assistant</h4>
                   <p className="text-sm text-hack-textSecondary mb-2">
-                    A collaborative music platform for hackers
+                    A helpful AI companion for students
                   </p>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs bg-hack-accent/20 text-hack-accent px-2 py-1 rounded-full">JavaScript</span>
-                    <span className="text-xs bg-hack-purple/20 text-hack-purple px-2 py-1 rounded-full">React</span>
+                    <span className="text-xs bg-hack-accent/20 text-hack-accent px-2 py-1 rounded-full">Python</span>
+                    <span className="text-xs bg-hack-purple/20 text-hack-purple px-2 py-1 rounded-full">AI</span>
                   </div>
                 </div>
                 <div className="hover:bg-hack-border/30 rounded-lg p-3 cursor-pointer transition-colors">
-                  <h4 className="font-bold text-hack-text">Sprig Game Engine</h4>
+                  <h4 className="font-bold text-hack-text">Study Buddy App</h4>
                   <p className="text-sm text-hack-textSecondary mb-2">
-                    Make games with just a few lines of code
+                    Connect with study partners nearby
                   </p>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs bg-hack-green/20 text-hack-green px-2 py-1 rounded-full">TypeScript</span>
-                    <span className="text-xs bg-hack-yellow/20 text-hack-yellow px-2 py-1 rounded-full">Game Dev</span>
+                    <span className="text-xs bg-hack-green/20 text-hack-green px-2 py-1 rounded-full">React Native</span>
+                    <span className="text-xs bg-hack-yellow/20 text-hack-yellow px-2 py-1 rounded-full">Social</span>
                   </div>
                 </div>
                 <div className="hover:bg-hack-border/30 rounded-lg p-3 cursor-pointer transition-colors">
-                  <h4 className="font-bold text-hack-text">Hack Club Bank</h4>
+                  <h4 className="font-bold text-hack-text">Code Mentor</h4>
                   <p className="text-sm text-hack-textSecondary mb-2">
-                    Financial infrastructure for student hackers
+                    Peer-to-peer coding help platform
                   </p>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs bg-hack-cyan/20 text-hack-cyan px-2 py-1 rounded-full">Python</span>
-                    <span className="text-xs bg-hack-pink/20 text-hack-pink px-2 py-1 rounded-full">FinTech</span>
+                    <span className="text-xs bg-hack-cyan/20 text-hack-cyan px-2 py-1 rounded-full">Next.js</span>
+                    <span className="text-xs bg-hack-pink/20 text-hack-pink px-2 py-1 rounded-full">Education</span>
                   </div>
                 </div>
               </div>
@@ -276,19 +277,19 @@ export const CommentApp = () => {
               <h3 className="text-lg font-bold text-hack-text mb-4">Quick Actions</h3>
               <div className="space-y-2">
                 <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
-                  <span className="text-hack-accent">💡</span>
+                  <span className="text-hack-accent">IDEA</span>
                   <span className="text-hack-text">Share an idea</span>
                 </button>
                 <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
-                  <span className="text-hack-secondary">🚀</span>
+                  <span className="text-hack-secondary">SHIP</span>
                   <span className="text-hack-text">Ship a project</span>
                 </button>
                 <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
-                  <span className="text-hack-success">🤝</span>
+                  <span className="text-hack-success">HELP</span>
                   <span className="text-hack-text">Ask for help</span>
                 </button>
                 <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
-                  <span className="text-hack-purple">🎯</span>
+                  <span className="text-hack-purple">TEAM</span>
                   <span className="text-hack-text">Find teammates</span>
                 </button>
               </div>

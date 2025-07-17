@@ -29,6 +29,13 @@ module.exports = {
           yellow: '#f1fa8c',
           orange: '#ffb86c',
         },
+        slack: {
+          purple: '#4A154B',
+          green: '#2EB67D',
+          blue: '#36C5F0',
+          yellow: '#ECB22E',
+          red: '#E01E5A',
+        },
       },
       fontFamily: {
         'mono': ['Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'monospace'],

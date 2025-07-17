@@ -149,7 +149,7 @@ export const CommentItem = ({
 
   const handleShare = () => {
     // TODO: Implement share functionality
-    toast.success('🔗 Link copied to clipboard!');
+    toast.success('Link copied to clipboard!');
   };
 
   const marginLeft = level > 0 ? 4 : 0;
