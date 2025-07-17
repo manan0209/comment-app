@@ -57,35 +57,35 @@ export const AuthPage = () => {
     <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-dark-text">Comment App</h1>
-          <p className="mt-2 text-dark-textSecondary">
-            A minimalistic comment platform
+          <h1 className="text-4xl font-bold text-dark-text mb-2">ThreadsX</h1>
+          <p className="text-dark-textSecondary text-lg">
+            Join the conversation
           </p>
         </div>
 
-        <div className="bg-dark-surface p-8 rounded-lg border border-dark-border">
+        <div className="bg-dark-surface p-8 rounded-2xl border border-dark-border">
           <div className="flex mb-6">
             <button
               type="button"
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-l-md border ${
+              className={`flex-1 py-3 px-4 text-sm font-bold rounded-l-full border transition-colors ${
                 isLogin
-                  ? 'bg-dark-accent text-white border-dark-accent'
-                  : 'bg-dark-bg text-dark-textSecondary border-dark-border hover:bg-dark-border'
+                  ? 'bg-dark-text text-dark-bg border-dark-text'
+                  : 'bg-transparent text-dark-text border-dark-border hover:bg-dark-border'
               }`}
             >
-              Login
+              Sign in
             </button>
             <button
               type="button"
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-md border ${
+              className={`flex-1 py-3 px-4 text-sm font-bold rounded-r-full border transition-colors ${
                 !isLogin
-                  ? 'bg-dark-accent text-white border-dark-accent'
-                  : 'bg-dark-bg text-dark-textSecondary border-dark-border hover:bg-dark-border'
+                  ? 'bg-dark-text text-dark-bg border-dark-text'
+                  : 'bg-transparent text-dark-text border-dark-border hover:bg-dark-border'
               }`}
             >
-              Register
+              Sign up
             </button>
           </div>
 
