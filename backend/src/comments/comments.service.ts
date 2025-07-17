@@ -29,7 +29,7 @@ export class CommentsService {
 
     if (moderationResult.action === 'block') {
       throw new BadRequestException(
-        `Comment blocked: ${moderationResult.reason}. Please review our community guidelines.`
+        `Comment blocked: ${moderationResult.reason || 'Content violates community guidelines'}. Please review our community guidelines.`
       );
     }
 
@@ -154,7 +154,7 @@ export class CommentsService {
 
     if (moderationResult.action === 'block') {
       throw new BadRequestException(
-        `Update blocked: ${moderationResult.reason}. Please review our community guidelines.`
+        `Update blocked: ${moderationResult.reason || 'Content violates community guidelines'}. Please review our community guidelines.`
       );
     }
 
