@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
 import { Notification } from '../entities/notification.entity';
 import { User } from '../entities/user.entity';
+import { ModerationService } from '../moderation/moderation.service';
 import { AdminAction, AdminCommentActionDto, BulkAdminActionDto } from './dto/admin-comment-action.dto';
 
 @Injectable()
@@ -15,6 +16,7 @@ export class AdminService {
     private usersRepository: Repository<User>,
     @InjectRepository(Notification)
     private notificationsRepository: Repository<Notification>,
+    private moderationService: ModerationService,
   ) {}
 
   async getAllComments(page = 1, limit = 50, searchTerm?: string) {
@@ -122,12 +124,20 @@ export class AdminService {
       where: { isDeleted: true },
     });
 
+    // Get moderation stats
+    const moderationStats = await this.moderationService.getModerationStats();
+
     return {
       totalUsers,
       totalComments,
       deletedComments,
       activeComments: totalComments - deletedComments,
+      ...moderationStats,
     };
+  }
+
+  async runAutoModeration() {
+    return this.moderationService.autoModerateExistingContent();
   }
 
   async searchCommentsByContent(searchTerm: string) {

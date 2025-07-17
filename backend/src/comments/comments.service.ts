@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
+import { ModerationService } from '../moderation/moderation.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { UsersService } from '../users/users.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -14,10 +15,36 @@ export class CommentsService {
     private commentsRepository: Repository<Comment>,
     private usersService: UsersService,
     private notificationsService: NotificationsService,
+    private moderationService: ModerationService,
   ) {}
 
   async create(createCommentDto: CreateCommentDto, authorId: string): Promise<Comment> {
     await this.usersService.findByIdOrThrow(authorId);
+
+    // Moderate content before creating comment
+    const moderationResult = await this.moderationService.moderateContent(
+      createCommentDto.content,
+      authorId
+    );
+
+    if (moderationResult.action === 'block') {
+      throw new BadRequestException(
+        `Comment blocked: ${moderationResult.reason}. Please review our community guidelines.`
+      );
+    }
+
+    if (moderationResult.action === 'ban') {
+      // You could implement user banning logic here
+      throw new ForbiddenException(
+        'Your account has been temporarily restricted due to policy violations.'
+      );
+    }
+
+    // Clean content if needed
+    let finalContent = createCommentDto.content;
+    if (moderationResult.action === 'warn') {
+      finalContent = this.moderationService.cleanContent(createCommentDto.content);
+    }
 
     let parent: Comment | null = null;
     if (createCommentDto.parentId) {
@@ -32,7 +59,7 @@ export class CommentsService {
     }
 
     const comment = this.commentsRepository.create({
-      content: createCommentDto.content,
+      content: finalContent,
       authorId,
       parentId: createCommentDto.parentId || null,
     });
@@ -119,11 +146,29 @@ export class CommentsService {
       throw new BadRequestException('Comment can only be edited within 15 minutes of posting');
     }
 
+    // Moderate updated content
+    const moderationResult = await this.moderationService.moderateContent(
+      updateCommentDto.content,
+      userId
+    );
+
+    if (moderationResult.action === 'block') {
+      throw new BadRequestException(
+        `Update blocked: ${moderationResult.reason}. Please review our community guidelines.`
+      );
+    }
+
+    // Clean content if needed
+    let finalContent = updateCommentDto.content;
+    if (moderationResult.action === 'warn') {
+      finalContent = this.moderationService.cleanContent(updateCommentDto.content);
+    }
+
     if (!comment.originalContent) {
       comment.originalContent = comment.content;
     }
 
-    comment.content = updateCommentDto.content;
+    comment.content = finalContent;
     comment.isEdited = true;
 
     await this.commentsRepository.save(comment);

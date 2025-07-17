@@ -66,4 +66,10 @@ export class AdminController {
     await this.checkAdminAccess(req.user.id);
     return this.adminService.searchCommentsByContent(searchTerm);
   }
+
+  @Post('moderation/auto-moderate')
+  async runAutoModeration(@Request() req) {
+    await this.checkAdminAccess(req.user.id);
+    return this.adminService.runAutoModeration();
+  }
 }
