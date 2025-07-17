@@ -119,32 +119,43 @@ export const CommentApp = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg">
+    <div className="min-h-screen bg-hack-bg">
       <Header />
       
-      <div className="max-w-6xl mx-auto flex">
+      <div className="max-w-7xl mx-auto flex">
         {/* Left spacer (matches header sidebar) */}
-        <div className="w-64" />
+        <div className="w-72" />
         
         {/* Main content */}
-        <div className="flex-1 border-l border-r border-dark-border min-h-screen">
-          {/* Tweet composer */}
-          <div className="border-b border-dark-border">
-            <CommentForm onCommentCreated={handleCommentCreated} />
-          </div>
+        <div className="flex-1 min-h-screen">
+          {/* Message composer */}
+          <CommentForm onCommentCreated={handleCommentCreated} />
 
-          {/* Feed */}
+          {/* Messages feed */}
           <div>
             {comments.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="max-w-xs mx-auto">
-                  <h3 className="text-2xl font-bold text-dark-text mb-2">Welcome to ThreadsX!</h3>
-                  <p className="text-dark-textSecondary mb-4">
-                    This is where you'll see posts from people you follow and trending topics.
+              <div className="text-center py-20">
+                <div className="max-w-md mx-auto">
+                  <div className="w-20 h-20 bg-gradient-to-br from-hack-primary to-hack-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 animate-bounce-in">
+                    <span className="text-3xl">🚀</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-hack-text mb-3">
+                    Welcome to <span className="text-hack-primary">Hack</span>Club #general!
+                  </h3>
+                  <p className="text-hack-textSecondary mb-6 leading-relaxed">
+                    This is the beginning of something awesome. Share your projects, 
+                    get help with code, or just chat about whatever you're building! 
                   </p>
-                  <p className="text-dark-textSecondary">
-                    Start by posting your first thought above! 👆
-                  </p>
+                  <div className="flex items-center justify-center space-x-4 text-sm text-hack-textSecondary">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-hack-success rounded-full animate-pulse"></div>
+                      <span>Safe space for all hackers</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-hack-accent rounded-full animate-pulse"></div>
+                      <span>Be kind, be curious</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -161,19 +172,24 @@ export const CommentApp = () => {
             )}
 
             {hasMore && (
-              <div className="border-t border-dark-border p-4">
+              <div className="border-t border-hack-border/50 p-6">
                 <button
                   onClick={loadMoreComments}
                   disabled={loadingMore}
-                  className="w-full py-3 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  className="w-full py-4 text-hack-accent hover:bg-hack-accent/10 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 border border-hack-border hover:border-hack-accent/50"
                 >
                   {loadingMore ? (
                     <>
                       <LoadingSpinner />
-                      <span>Loading more posts...</span>
+                      <span>Loading more messages...</span>
                     </>
                   ) : (
-                    <span>Show more posts</span>
+                    <>
+                      <span>Load older messages</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                      </svg>
+                    </>
                   )}
                 </button>
               </div>
@@ -182,78 +198,97 @@ export const CommentApp = () => {
         </div>
 
         {/* Right sidebar */}
-        <div className="w-80 p-4">
-          <div className="sticky top-20 space-y-4">
-            {/* Search */}
-            <div className="bg-dark-surface rounded-2xl p-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search ThreadsX"
-                  className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-3 text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <div className="absolute left-3 top-3.5">
-                  <svg className="h-5 w-5 text-dark-textSecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+        <div className="w-80 p-6 border-l border-hack-border">
+          <div className="sticky top-24 space-y-6">
+            {/* Active hackers */}
+            <div className="bg-hack-surface rounded-xl p-4 border border-hack-border">
+              <h3 className="text-lg font-bold text-hack-text mb-4 flex items-center space-x-2">
+                <div className="w-3 h-3 bg-hack-success rounded-full animate-pulse"></div>
+                <span>Active Hackers</span>
+              </h3>
+              <div className="space-y-3">
+                {['alice', 'bob', 'charlie', 'diana', 'eve'].map((name, index) => (
+                  <div key={name} className="flex items-center space-x-3 hover:bg-hack-border/30 rounded-lg p-2 transition-colors cursor-pointer">
+                    <div className={`w-8 h-8 bg-gradient-to-br from-hack-primary to-hack-secondary rounded-lg flex items-center justify-center`}>
+                      <span className="text-hack-text text-sm font-bold">
+                        {name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-hack-text font-medium">{name}</p>
+                      <p className="text-sm text-hack-textSecondary">
+                        {index === 0 ? 'Building a Discord bot' : 
+                         index === 1 ? 'Learning React' :
+                         index === 2 ? 'Working on AI project' :
+                         index === 3 ? 'Hackathon prep' : 'Just vibing'}
+                      </p>
+                    </div>
+                    <div className="w-2 h-2 bg-hack-success rounded-full"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Trending projects */}
+            <div className="bg-hack-surface rounded-xl p-4 border border-hack-border">
+              <h3 className="text-lg font-bold text-hack-text mb-4 flex items-center space-x-2">
+                <span className="text-hack-secondary">🔥</span>
+                <span>Trending Projects</span>
+              </h3>
+              <div className="space-y-3">
+                <div className="hover:bg-hack-border/30 rounded-lg p-3 cursor-pointer transition-colors">
+                  <h4 className="font-bold text-hack-text">Orpheus Radio</h4>
+                  <p className="text-sm text-hack-textSecondary mb-2">
+                    A collaborative music platform for hackers
+                  </p>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs bg-hack-accent/20 text-hack-accent px-2 py-1 rounded-full">JavaScript</span>
+                    <span className="text-xs bg-hack-purple/20 text-hack-purple px-2 py-1 rounded-full">React</span>
+                  </div>
+                </div>
+                <div className="hover:bg-hack-border/30 rounded-lg p-3 cursor-pointer transition-colors">
+                  <h4 className="font-bold text-hack-text">Sprig Game Engine</h4>
+                  <p className="text-sm text-hack-textSecondary mb-2">
+                    Make games with just a few lines of code
+                  </p>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs bg-hack-green/20 text-hack-green px-2 py-1 rounded-full">TypeScript</span>
+                    <span className="text-xs bg-hack-yellow/20 text-hack-yellow px-2 py-1 rounded-full">Game Dev</span>
+                  </div>
+                </div>
+                <div className="hover:bg-hack-border/30 rounded-lg p-3 cursor-pointer transition-colors">
+                  <h4 className="font-bold text-hack-text">Hack Club Bank</h4>
+                  <p className="text-sm text-hack-textSecondary mb-2">
+                    Financial infrastructure for student hackers
+                  </p>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs bg-hack-cyan/20 text-hack-cyan px-2 py-1 rounded-full">Python</span>
+                    <span className="text-xs bg-hack-pink/20 text-hack-pink px-2 py-1 rounded-full">FinTech</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Trending */}
-            <div className="bg-dark-surface rounded-2xl p-4">
-              <h3 className="text-xl font-bold text-dark-text mb-4">What's happening</h3>
-              <div className="space-y-3">
-                <div className="hover:bg-dark-border rounded-lg p-2 cursor-pointer transition-colors">
-                  <p className="text-sm text-dark-textSecondary">Trending in Technology</p>
-                  <p className="font-bold text-dark-text">React 19</p>
-                  <p className="text-sm text-dark-textSecondary">42.5K posts</p>
-                </div>
-                <div className="hover:bg-dark-border rounded-lg p-2 cursor-pointer transition-colors">
-                  <p className="text-sm text-dark-textSecondary">Trending</p>
-                  <p className="font-bold text-dark-text">Next.js</p>
-                  <p className="text-sm text-dark-textSecondary">28.1K posts</p>
-                </div>
-                <div className="hover:bg-dark-border rounded-lg p-2 cursor-pointer transition-colors">
-                  <p className="text-sm text-dark-textSecondary">Trending in Programming</p>
-                  <p className="font-bold text-dark-text">TypeScript</p>
-                  <p className="text-sm text-dark-textSecondary">18.7K posts</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Who to follow */}
-            <div className="bg-dark-surface rounded-2xl p-4">
-              <h3 className="text-xl font-bold text-dark-text mb-4">Who to follow</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">V</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-dark-text">Vercel</p>
-                      <p className="text-sm text-dark-textSecondary">@vercel</p>
-                    </div>
-                  </div>
-                  <button className="px-4 py-1.5 bg-dark-text text-dark-bg font-bold rounded-full hover:bg-gray-200 transition-colors">
-                    Follow
-                  </button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">N</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-dark-text">Netlify</p>
-                      <p className="text-sm text-dark-textSecondary">@netlify</p>
-                    </div>
-                  </div>
-                  <button className="px-4 py-1.5 bg-dark-text text-dark-bg font-bold rounded-full hover:bg-gray-200 transition-colors">
-                    Follow
-                  </button>
-                </div>
+            {/* Quick actions */}
+            <div className="bg-hack-surface rounded-xl p-4 border border-hack-border">
+              <h3 className="text-lg font-bold text-hack-text mb-4">Quick Actions</h3>
+              <div className="space-y-2">
+                <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
+                  <span className="text-hack-accent">💡</span>
+                  <span className="text-hack-text">Share an idea</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
+                  <span className="text-hack-secondary">🚀</span>
+                  <span className="text-hack-text">Ship a project</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
+                  <span className="text-hack-success">🤝</span>
+                  <span className="text-hack-text">Ask for help</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-hack-border/30 transition-colors text-left">
+                  <span className="text-hack-purple">🎯</span>
+                  <span className="text-hack-text">Find teammates</span>
+                </button>
               </div>
             </div>
           </div>

@@ -54,24 +54,29 @@ export const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-hack-bg via-hack-surface to-hack-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-dark-text mb-2">ThreadsX</h1>
-          <p className="text-dark-textSecondary text-lg">
-            Join the conversation
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-hack-primary to-hack-secondary rounded-2xl mb-6 shadow-lg animate-bounce-in">
+            <span className="text-3xl font-bold text-white">HC</span>
+          </div>
+          <h1 className="text-4xl font-bold text-hack-text mb-2">
+            <span className="text-hack-primary">Hack</span>Club
+          </h1>
+          <p className="text-hack-textSecondary text-lg">
+            Where amazing things get built
           </p>
         </div>
 
-        <div className="bg-dark-surface p-8 rounded-2xl border border-dark-border">
+        <div className="bg-hack-surface p-8 rounded-2xl border border-hack-border shadow-2xl backdrop-blur-sm">
           <div className="flex mb-6">
             <button
               type="button"
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-3 px-4 text-sm font-bold rounded-l-full border transition-colors ${
+              className={`flex-1 py-3 px-4 text-sm font-bold rounded-l-full border transition-all duration-200 ${
                 isLogin
-                  ? 'bg-dark-text text-dark-bg border-dark-text'
-                  : 'bg-transparent text-dark-text border-dark-border hover:bg-dark-border'
+                  ? 'bg-gradient-to-r from-hack-primary to-hack-secondary text-white border-hack-primary shadow-lg'
+                  : 'bg-transparent text-hack-text border-hack-border hover:bg-hack-border/30'
               }`}
             >
               Sign in
@@ -79,10 +84,10 @@ export const AuthPage = () => {
             <button
               type="button"
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-3 px-4 text-sm font-bold rounded-r-full border transition-colors ${
+              className={`flex-1 py-3 px-4 text-sm font-bold rounded-r-full border transition-all duration-200 ${
                 !isLogin
-                  ? 'bg-dark-text text-dark-bg border-dark-text'
-                  : 'bg-transparent text-dark-text border-dark-border hover:bg-dark-border'
+                  ? 'bg-gradient-to-r from-hack-primary to-hack-secondary text-white border-hack-primary shadow-lg'
+                  : 'bg-transparent text-hack-text border-hack-border hover:bg-hack-border/30'
               }`}
             >
               Sign up
@@ -92,34 +97,34 @@ export const AuthPage = () => {
           {isLogin ? (
             <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-dark-text mb-2">
+                <label className="block text-sm font-medium text-hack-text mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   {...loginForm.register('email', { required: 'Email is required' })}
-                  className="w-full px-3 py-2 bg-dark-bg border border-dark-border rounded-md text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-dark-accent focus:border-transparent"
+                  className="w-full px-4 py-3 bg-hack-bg border border-hack-border rounded-xl text-hack-text placeholder-hack-textSecondary focus:outline-none focus:ring-2 focus:ring-hack-primary focus:border-transparent transition-all duration-200"
                   placeholder="Enter your email"
                 />
                 {loginForm.formState.errors.email && (
-                  <p className="mt-1 text-sm text-dark-error">
+                  <p className="mt-1 text-sm text-hack-error">
                     {loginForm.formState.errors.email.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-dark-text mb-2">
+                <label className="block text-sm font-medium text-hack-text mb-2">
                   Password
                 </label>
                 <input
                   type="password"
                   {...loginForm.register('password', { required: 'Password is required' })}
-                  className="w-full px-3 py-2 bg-dark-bg border border-dark-border rounded-md text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-dark-accent focus:border-transparent"
+                  className="w-full px-4 py-3 bg-hack-bg border border-hack-border rounded-xl text-hack-text placeholder-hack-textSecondary focus:outline-none focus:ring-2 focus:ring-hack-primary focus:border-transparent transition-all duration-200"
                   placeholder="Enter your password"
                 />
                 {loginForm.formState.errors.password && (
-                  <p className="mt-1 text-sm text-dark-error">
+                  <p className="mt-1 text-sm text-hack-error">
                     {loginForm.formState.errors.password.message}
                   </p>
                 )}
@@ -128,15 +133,25 @@ export const AuthPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2 px-4 bg-dark-accent hover:bg-dark-accentHover text-white font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full py-3 px-6 bg-gradient-to-r from-hack-primary to-hack-secondary text-white font-bold rounded-xl hover:from-hack-primary/90 hover:to-hack-secondary/90 focus:outline-none focus:ring-2 focus:ring-hack-primary focus:ring-offset-2 focus:ring-offset-hack-surface disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 flex items-center justify-center"
               >
-                {loading ? <LoadingSpinner /> : 'Login'}
+                {loading ? (
+                  <div className="flex items-center space-x-2">
+                    <LoadingSpinner />
+                    <span>Signing in...</span>
+                  </div>
+                ) : (
+                  <span className="flex items-center space-x-2">
+                    <span>Sign In</span>
+                    <span className="text-lg">🚀</span>
+                  </span>
+                )}
               </button>
             </form>
           ) : (
             <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-dark-text mb-2">
+                <label className="block text-sm font-medium text-hack-text mb-2">
                   Username
                 </label>
                 <input
@@ -149,35 +164,35 @@ export const AuthPage = () => {
                       message: 'Username can only contain letters, numbers, and underscores',
                     },
                   })}
-                  className="w-full px-3 py-2 bg-dark-bg border border-dark-border rounded-md text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-dark-accent focus:border-transparent"
+                  className="w-full px-4 py-3 bg-hack-bg border border-hack-border rounded-xl text-hack-text placeholder-hack-textSecondary focus:outline-none focus:ring-2 focus:ring-hack-primary focus:border-transparent transition-all duration-200"
                   placeholder="Choose a username"
                 />
                 {registerForm.formState.errors.username && (
-                  <p className="mt-1 text-sm text-dark-error">
+                  <p className="mt-1 text-sm text-hack-error">
                     {registerForm.formState.errors.username.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-dark-text mb-2">
+                <label className="block text-sm font-medium text-hack-text mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   {...registerForm.register('email', { required: 'Email is required' })}
-                  className="w-full px-3 py-2 bg-dark-bg border border-dark-border rounded-md text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-dark-accent focus:border-transparent"
+                  className="w-full px-4 py-3 bg-hack-bg border border-hack-border rounded-xl text-hack-text placeholder-hack-textSecondary focus:outline-none focus:ring-2 focus:ring-hack-primary focus:border-transparent transition-all duration-200"
                   placeholder="Enter your email"
                 />
                 {registerForm.formState.errors.email && (
-                  <p className="mt-1 text-sm text-dark-error">
+                  <p className="mt-1 text-sm text-hack-error">
                     {registerForm.formState.errors.email.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-dark-text mb-2">
+                <label className="block text-sm font-medium text-hack-text mb-2">
                   Password
                 </label>
                 <input
@@ -186,18 +201,18 @@ export const AuthPage = () => {
                     required: 'Password is required',
                     minLength: { value: 6, message: 'Password must be at least 6 characters' },
                   })}
-                  className="w-full px-3 py-2 bg-dark-bg border border-dark-border rounded-md text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-dark-accent focus:border-transparent"
+                  className="w-full px-4 py-3 bg-hack-bg border border-hack-border rounded-xl text-hack-text placeholder-hack-textSecondary focus:outline-none focus:ring-2 focus:ring-hack-primary focus:border-transparent transition-all duration-200"
                   placeholder="Create a password"
                 />
                 {registerForm.formState.errors.password && (
-                  <p className="mt-1 text-sm text-dark-error">
+                  <p className="mt-1 text-sm text-hack-error">
                     {registerForm.formState.errors.password.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-dark-text mb-2">
+                <label className="block text-sm font-medium text-hack-text mb-2">
                   Confirm Password
                 </label>
                 <input
@@ -205,11 +220,11 @@ export const AuthPage = () => {
                   {...registerForm.register('confirmPassword', {
                     required: 'Please confirm your password',
                   })}
-                  className="w-full px-3 py-2 bg-dark-bg border border-dark-border rounded-md text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-dark-accent focus:border-transparent"
+                  className="w-full px-4 py-3 bg-hack-bg border border-hack-border rounded-xl text-hack-text placeholder-hack-textSecondary focus:outline-none focus:ring-2 focus:ring-hack-primary focus:border-transparent transition-all duration-200"
                   placeholder="Confirm your password"
                 />
                 {registerForm.formState.errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-dark-error">
+                  <p className="mt-1 text-sm text-hack-error">
                     {registerForm.formState.errors.confirmPassword.message}
                   </p>
                 )}
@@ -218,12 +233,43 @@ export const AuthPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2 px-4 bg-dark-accent hover:bg-dark-accentHover text-white font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full py-3 px-6 bg-gradient-to-r from-hack-primary to-hack-secondary text-white font-bold rounded-xl hover:from-hack-primary/90 hover:to-hack-secondary/90 focus:outline-none focus:ring-2 focus:ring-hack-primary focus:ring-offset-2 focus:ring-offset-hack-surface disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 flex items-center justify-center"
               >
-                {loading ? <LoadingSpinner /> : 'Register'}
+                {loading ? (
+                  <div className="flex items-center space-x-2">
+                    <LoadingSpinner />
+                    <span>Creating account...</span>
+                  </div>
+                ) : (
+                  <span className="flex items-center space-x-2">
+                    <span>Join Hack Club</span>
+                    <span className="text-lg">✨</span>
+                  </span>
+                )}
               </button>
             </form>
           )}
+        </div>
+
+        {/* Footer */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center space-x-6 text-hack-textSecondary">
+            <a href="#" className="hover:text-hack-primary transition-colors flex items-center space-x-1">
+              <span>🌟</span>
+              <span>Projects</span>
+            </a>
+            <a href="#" className="hover:text-hack-primary transition-colors flex items-center space-x-1">
+              <span>🎯</span>
+              <span>Hackathons</span>
+            </a>
+            <a href="#" className="hover:text-hack-primary transition-colors flex items-center space-x-1">
+              <span>🤝</span>
+              <span>Community</span>
+            </a>
+          </div>
+          <p className="text-sm text-hack-textSecondary">
+            Made with ❤️ by the Hack Club community
+          </p>
         </div>
       </div>
     </div>

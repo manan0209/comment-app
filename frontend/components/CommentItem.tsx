@@ -11,8 +11,13 @@ import {
     ArrowPathRoundedSquareIcon,
     ShareIcon,
     EllipsisHorizontalIcon,
+    FireIcon,
+    CodeBracketIcon,
+    RocketLaunchIcon,
+    SparklesIcon,
+    CommandLineIcon,
 } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { HeartIcon as HeartIconSolid, FireIcon as FireIconSolid } from '@heroicons/react/24/solid';
 import moment from 'moment';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -43,11 +48,25 @@ export const CommentItem = ({
   const [loading, setLoading] = useState(false);
   const [showReplies, setShowReplies] = useState(true);
   const [liked, setLiked] = useState(false);
+  const [fired, setFired] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<EditFormData>({
     defaultValues: { content: comment.content }
   });
+
+  const hackClubGradients = [
+    'from-hack-primary to-hack-secondary',
+    'from-hack-accent to-hack-purple',
+    'from-hack-cyan to-hack-green',
+    'from-hack-yellow to-hack-orange',
+    'from-hack-pink to-hack-purple',
+  ];
+
+  const getUserGradient = (username: string) => {
+    const index = username ? username.length % hackClubGradients.length : 0;
+    return hackClubGradients[index];
+  };
 
   const isOwner = user?.id === comment.authorId;
   const canEdit = isOwner && comment.canEdit;
@@ -123,28 +142,33 @@ export const CommentItem = ({
     // TODO: Implement actual like functionality
   };
 
-  const handleShare = () => {
-    // TODO: Implement share functionality
-    toast.success('Link copied to clipboard!');
+  const handleFire = () => {
+    setFired(!fired);
+    // TODO: Implement actual fire reaction functionality
   };
 
-  const marginLeft = level > 0 ? 3 : 0;
+  const handleShare = () => {
+    // TODO: Implement share functionality
+    toast.success('🔗 Link copied to clipboard!');
+  };
+
+  const marginLeft = level > 0 ? 4 : 0;
 
   return (
     <div 
-      className="animate-fade-in"
+      className="animate-fade-in group hover:bg-hack-surface/30 transition-all duration-200"
       style={{ marginLeft: `${marginLeft}rem` }}
     >
-      <div className={`border-b border-dark-border hover:bg-dark-surface/50 transition-colors ${
+      <div className={`px-6 py-4 ${level === 0 ? 'border-b border-hack-border/50' : ''} ${
         comment.isDeleted ? 'opacity-60' : ''
-      } ${level === 0 ? 'px-4 py-3' : 'px-3 py-2'}`}>
+      }`}>
         
-        {/* Main tweet content */}
-        <div className="flex space-x-3">
+        {/* Main message content */}
+        <div className="flex space-x-4">
           {/* Avatar */}
           <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">
+            <div className={`w-10 h-10 bg-gradient-to-br ${getUserGradient(comment.author?.username || '')} rounded-xl flex items-center justify-center shadow-hack transition-all duration-200 hover:shadow-hack-lg`}>
+              <span className="text-hack-text text-sm font-bold">
                 {comment.author?.username?.charAt(0).toUpperCase() || '?'}
               </span>
             </div>
@@ -153,47 +177,40 @@ export const CommentItem = ({
           {/* Content */}
           <div className="flex-1 min-w-0">
             {/* Header */}
-            <div className="flex items-center space-x-2 mb-1">
-              <div className="flex items-center space-x-1">
-                <h3 className="font-bold text-dark-text text-sm hover:underline cursor-pointer">
-                  {comment.author?.username || 'Unknown User'}
-                </h3>
-                <span className="text-dark-textSecondary text-sm">
-                  @{comment.author?.username?.toLowerCase() || 'unknown'}
+            <div className="flex items-center space-x-2 mb-2">
+              <h3 className="font-bold text-hack-text hover:text-hack-primary cursor-pointer transition-colors">
+                {comment.author?.username || 'Unknown User'}
+              </h3>
+              <time className="text-sm text-hack-textSecondary font-mono">
+                {renderTimeInfo()}
+              </time>
+              {comment.isEdited && (
+                <span className="text-xs text-hack-textSecondary bg-hack-border/50 px-2 py-1 rounded-full font-mono">
+                  edited
                 </span>
-                <span className="text-dark-textSecondary text-sm">·</span>
-                <time className="text-dark-textSecondary text-sm hover:underline cursor-pointer">
-                  {renderTimeInfo()}
-                </time>
-                {comment.isEdited && (
-                  <>
-                    <span className="text-dark-textSecondary text-sm">·</span>
-                    <span className="text-dark-textSecondary text-sm">edited</span>
-                  </>
-                )}
-              </div>
+              )}
               
               {/* Dropdown menu */}
-              <div className="ml-auto relative">
+              <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="p-1 rounded-full hover:bg-dark-border text-dark-textSecondary hover:text-dark-text transition-colors"
+                  className="p-1 rounded-lg hover:bg-hack-border text-hack-textSecondary hover:text-hack-text transition-colors"
                 >
-                  <EllipsisHorizontalIcon className="h-5 w-5" />
+                  <EllipsisHorizontalIcon className="h-4 w-4" />
                 </button>
                 
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-dark-surface border border-dark-border rounded-xl shadow-lg z-50 py-1">
+                  <div className="absolute right-0 mt-2 w-48 bg-hack-surface border border-hack-border rounded-xl shadow-hack-lg z-50 py-2 animate-slide-up">
                     {canEdit && !isEditing && (
                       <button
                         onClick={() => {
                           setIsEditing(true);
                           setShowDropdown(false);
                         }}
-                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-dark-text hover:bg-dark-border transition-colors"
+                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-hack-text hover:bg-hack-border/50 transition-colors"
                       >
-                        <PencilIcon className="h-4 w-4" />
-                        <span>Edit</span>
+                        <PencilIcon className="h-4 w-4 text-hack-accent" />
+                        <span>Edit message</span>
                       </button>
                     )}
                     
@@ -204,10 +221,10 @@ export const CommentItem = ({
                           setShowDropdown(false);
                         }}
                         disabled={loading}
-                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-dark-border transition-colors disabled:opacity-50"
+                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-hack-error hover:bg-hack-border/50 transition-colors disabled:opacity-50"
                       >
                         <TrashIcon className="h-4 w-4" />
-                        <span>Delete</span>
+                        <span>Delete message</span>
                       </button>
                     )}
                     
@@ -218,50 +235,52 @@ export const CommentItem = ({
                           setShowDropdown(false);
                         }}
                         disabled={loading}
-                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-green-400 hover:bg-dark-border transition-colors disabled:opacity-50"
+                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-hack-success hover:bg-hack-border/50 transition-colors disabled:opacity-50"
                       >
                         <ArrowUturnLeftIcon className="h-4 w-4" />
-                        <span>Restore</span>
+                        <span>Restore message</span>
                       </button>
                     )}
+                    
+                    <div className="border-t border-hack-border my-2" />
                     
                     <button
                       onClick={() => {
                         handleShare();
                         setShowDropdown(false);
                       }}
-                      className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-dark-text hover:bg-dark-border transition-colors"
+                      className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-hack-text hover:bg-hack-border/50 transition-colors"
                     >
-                      <ShareIcon className="h-4 w-4" />
-                      <span>Share</span>
+                      <ShareIcon className="h-4 w-4 text-hack-cyan" />
+                      <span>Copy link</span>
                     </button>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Content */}
+            {/* Message content */}
             <div className="mb-3">
               {isEditing ? (
                 <form onSubmit={handleSubmit(handleEdit)} className="space-y-3">
                   <textarea
                     {...register('content', {
-                      required: 'Comment cannot be empty',
-                      minLength: { value: 1, message: 'Comment cannot be empty' },
-                      maxLength: { value: 2000, message: 'Comment cannot exceed 2000 characters' },
+                      required: 'Message cannot be empty',
+                      minLength: { value: 1, message: 'Message cannot be empty' },
+                      maxLength: { value: 500, message: 'Message cannot exceed 500 characters' },
                     })}
                     rows={3}
-                    className="w-full px-3 py-2 bg-dark-bg border border-dark-border rounded-lg text-dark-text placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full px-3 py-2 bg-hack-bg border border-hack-border rounded-lg text-hack-text placeholder-hack-textSecondary focus:outline-none focus:ring-2 focus:ring-hack-primary focus:border-transparent resize-none"
                   />
                   {errors.content && (
-                    <p className="text-sm text-red-400">{errors.content.message}</p>
+                    <p className="text-sm text-hack-error font-mono">{errors.content.message}</p>
                   )}
                   
                   <div className="flex items-center space-x-3">
                     <button
                       type="submit"
                       disabled={loading}
-                      className="px-4 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                      className="px-4 py-2 bg-hack-primary hover:bg-hack-primaryHover text-hack-text font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                     >
                       {loading && <LoadingSpinner />}
                       <span>Save</span>
@@ -273,7 +292,7 @@ export const CommentItem = ({
                         setIsEditing(false);
                         reset({ content: comment.content });
                       }}
-                      className="px-4 py-1.5 text-sm text-dark-textSecondary hover:text-dark-text transition-colors"
+                      className="px-4 py-2 text-sm text-hack-textSecondary hover:text-hack-text transition-colors"
                     >
                       Cancel
                     </button>
@@ -282,69 +301,70 @@ export const CommentItem = ({
               ) : (
                 <div>
                   {comment.isDeleted ? (
-                    <p className="text-dark-textSecondary italic">
-                      This comment has been deleted
+                    <p className="text-hack-textSecondary italic bg-hack-border/20 px-3 py-2 rounded-lg">
+                      This message has been deleted
                       {canRestore && (
-                        <span className="ml-2">
+                        <span className="ml-2 text-hack-success">
                           • You can restore it within 15 minutes
                         </span>
                       )}
                     </p>
                   ) : (
-                    <p className="text-dark-text whitespace-pre-wrap text-sm leading-relaxed">
+                    <div className="text-hack-text whitespace-pre-wrap leading-relaxed">
                       {comment.content}
-                    </p>
+                    </div>
                   )}
                 </div>
               )}
             </div>
 
-            {/* Actions */}
+            {/* Reactions and actions */}
             {!comment.isDeleted && !isEditing && (
-              <div className="flex items-center justify-between max-w-md mt-2">
+              <div className="flex items-center space-x-1 mt-2">
                 <button
                   onClick={() => setShowReplyForm(!showReplyForm)}
-                  className="group flex items-center space-x-2 text-dark-textSecondary hover:text-blue-400 transition-colors"
+                  className="group flex items-center space-x-1 px-3 py-1 rounded-lg text-hack-textSecondary hover:text-hack-accent hover:bg-hack-accent/10 transition-all duration-200"
                 >
-                  <div className="p-2 rounded-full group-hover:bg-blue-500/10 transition-colors">
-                    <ChatBubbleLeftIcon className="h-4 w-4" />
-                  </div>
-                  {comment.replies.length > 0 && (
-                    <span className="text-sm">{comment.replies.length}</span>
-                  )}
+                  <ChatBubbleLeftIcon className="h-4 w-4" />
+                  <span className="text-sm font-medium">
+                    {comment.replies.length > 0 ? comment.replies.length : 'Reply'}
+                  </span>
                 </button>
 
                 <button
                   onClick={handleLike}
-                  className="group flex items-center space-x-2 text-dark-textSecondary hover:text-red-400 transition-colors"
+                  className="group flex items-center space-x-1 px-3 py-1 rounded-lg text-hack-textSecondary hover:text-hack-pink hover:bg-hack-pink/10 transition-all duration-200"
                 >
-                  <div className="p-2 rounded-full group-hover:bg-red-500/10 transition-colors">
-                    {liked ? (
-                      <HeartIconSolid className="h-4 w-4 text-red-400" />
-                    ) : (
-                      <HeartIcon className="h-4 w-4" />
-                    )}
-                  </div>
-                  <span className="text-sm">0</span>
+                  {liked ? (
+                    <HeartIconSolid className="h-4 w-4 text-hack-pink" />
+                  ) : (
+                    <HeartIcon className="h-4 w-4" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {liked ? '1' : ''}
+                  </span>
+                </button>
+
+                <button
+                  onClick={handleFire}
+                  className="group flex items-center space-x-1 px-3 py-1 rounded-lg text-hack-textSecondary hover:text-hack-secondary hover:bg-hack-secondary/10 transition-all duration-200"
+                >
+                  {fired ? (
+                    <FireIconSolid className="h-4 w-4 text-hack-secondary" />
+                  ) : (
+                    <FireIcon className="h-4 w-4" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {fired ? '1' : ''}
+                  </span>
                 </button>
 
                 <button
                   onClick={handleShare}
-                  className="group flex items-center space-x-2 text-dark-textSecondary hover:text-green-400 transition-colors"
+                  className="group flex items-center space-x-1 px-3 py-1 rounded-lg text-hack-textSecondary hover:text-hack-cyan hover:bg-hack-cyan/10 transition-all duration-200"
                 >
-                  <div className="p-2 rounded-full group-hover:bg-green-500/10 transition-colors">
-                    <ArrowPathRoundedSquareIcon className="h-4 w-4" />
-                  </div>
-                  <span className="text-sm">0</span>
-                </button>
-
-                <button
-                  onClick={handleShare}
-                  className="group flex items-center space-x-2 text-dark-textSecondary hover:text-blue-400 transition-colors"
-                >
-                  <div className="p-2 rounded-full group-hover:bg-blue-500/10 transition-colors">
-                    <ShareIcon className="h-4 w-4" />
-                  </div>
+                  <ShareIcon className="h-4 w-4" />
+                  <span className="text-sm font-medium">Share</span>
                 </button>
               </div>
             )}
@@ -353,7 +373,7 @@ export const CommentItem = ({
 
         {/* Reply form */}
         {showReplyForm && !comment.isDeleted && (
-          <div className="mt-3 ml-13">
+          <div className="mt-4">
             <CommentForm
               onCommentCreated={(newComment) => {
                 onCommentCreated(newComment);
@@ -369,15 +389,19 @@ export const CommentItem = ({
 
       {/* Replies */}
       {showReplies && comment.replies.length > 0 && (
-        <div className="border-l-2 border-dark-border ml-6">
-          {comment.replies.map((reply) => (
-            <CommentItem
-              key={reply.id}
-              comment={reply}
-              onCommentCreated={onCommentCreated}
-              onCommentUpdated={onCommentUpdated}
-              level={level + 1}
-            />
+        <div className="relative">
+          {/* Thread line */}
+          <div className="absolute left-10 top-0 bottom-0 w-0.5 bg-hack-border/30"></div>
+          
+          {comment.replies.map((reply, index) => (
+            <div key={reply.id} className="relative">
+              <CommentItem
+                comment={reply}
+                onCommentCreated={onCommentCreated}
+                onCommentUpdated={onCommentUpdated}
+                level={level + 1}
+              />
+            </div>
           ))}
         </div>
       )}
