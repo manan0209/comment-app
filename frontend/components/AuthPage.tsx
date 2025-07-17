@@ -4,6 +4,9 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LoadingSpinner } from './LoadingSpinner';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+import toast from 'react-hot-toast';
 
 interface LoginForm {
   email: string;
@@ -15,6 +18,13 @@ interface RegisterForm {
   email: string;
   password: string;
   confirmPassword: string;
+}
+
+interface GoogleJwtPayload {
+  email: string;
+  name: string;
+  picture: string;
+  sub: string;
 }
 
 export const AuthPage = () => {
@@ -51,6 +61,41 @@ export const AuthPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      setLoading(true);
+      
+      // Decode the JWT token from Google
+      const decoded = jwtDecode<GoogleJwtPayload>(credentialResponse.credential);
+      
+      // Extract username from email (before @ symbol)
+      const username = decoded.email.split('@')[0];
+      
+      // Try to register first (in case it's a new user)
+      try {
+        await register(username, decoded.email, `google_${decoded.sub}`);
+        toast.success('🎉 Welcome to Hack Club!');
+      } catch (registerError: any) {
+        // If user already exists, try to login
+        if (registerError.response?.status === 409) {
+          await login(decoded.email, `google_${decoded.sub}`);
+          toast.success('🚀 Welcome back to Hack Club!');
+        } else {
+          throw registerError;
+        }
+      }
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      toast.error('Failed to sign in with Google. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error('Google sign-in was cancelled');
   };
 
   return (
@@ -147,6 +192,30 @@ export const AuthPage = () => {
                   </span>
                 )}
               </button>
+
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-hack-border"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-hack-surface px-4 text-hack-textSecondary">or continue with</span>
+                </div>
+              </div>
+
+              {/* Google Sign-In */}
+              <div className="w-full">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap={false}
+                  theme="filled_blue"
+                  size="large"
+                  shape="rectangular"
+                  width="100%"
+                  text="signin_with"
+                />
+              </div>
             </form>
           ) : (
             <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-6">
@@ -247,6 +316,30 @@ export const AuthPage = () => {
                   </span>
                 )}
               </button>
+
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-hack-border"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-hack-surface px-4 text-hack-textSecondary">or continue with</span>
+                </div>
+              </div>
+
+              {/* Google Sign-In */}
+              <div className="w-full">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap={false}
+                  theme="filled_blue"
+                  size="large"
+                  shape="rectangular"
+                  width="100%"
+                  text="signup_with"
+                />
+              </div>
             </form>
           )}
         </div>

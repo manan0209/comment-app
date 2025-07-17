@@ -183,6 +183,8 @@ export const Header = () => {
                     <span className="text-sm text-hack-textSecondary font-mono">
                       {Math.floor(Math.random() * 100) + 50} hackers online
                     </span>
+                    <span className="text-hack-textSecondary">•</span>
+                    <span className="text-sm text-hack-accent font-mono">SOM'25 Secret Club</span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">

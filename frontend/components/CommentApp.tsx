@@ -122,14 +122,16 @@ export const CommentApp = () => {
     <div className="min-h-screen bg-hack-bg">
       <Header />
       
-      <div className="max-w-7xl mx-auto flex">
+      <div className="flex">
         {/* Left spacer (matches header sidebar) */}
-        <div className="w-72" />
+        <div className="w-72 flex-shrink-0" />
         
         {/* Main content */}
-        <div className="flex-1 min-h-screen">
+        <div className="flex-1 min-h-screen border-r border-hack-border">
           {/* Message composer */}
-          <CommentForm onCommentCreated={handleCommentCreated} />
+          <div className="border-b border-hack-border">
+            <CommentForm onCommentCreated={handleCommentCreated} />
+          </div>
 
           {/* Messages feed */}
           <div>
@@ -198,7 +200,7 @@ export const CommentApp = () => {
         </div>
 
         {/* Right sidebar */}
-        <div className="w-80 p-6 border-l border-hack-border">
+        <div className="w-80 flex-shrink-0 p-6 border-l border-hack-border bg-hack-surface/30">
           <div className="sticky top-24 space-y-6">
             {/* Active hackers */}
             <div className="bg-hack-surface rounded-xl p-4 border border-hack-border">
