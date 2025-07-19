@@ -22,3 +22,11 @@ comment-app-local.postman_environment.json
 render_deployment.md
 railway_deployment.md
 admin_guide.md
+
+
+# IDE and editor files
+.vscode/
+.idea/
+meta.js
+upmeta.sh
+system.sh

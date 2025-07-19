@@ -59,10 +59,10 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-hack-bg border-b border-hack-border sticky top-0 z-50 backdrop-blur-md bg-hack-bg/90">
+    <header className="bg-hack-bg border-b border-hack-border fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-hack-bg/90">
       <div className="flex">
         {/* Left sidebar */}
-        <div className="w-72 flex-shrink-0 px-6 py-6 border-r border-hack-border bg-hack-surface/30 h-screen overflow-y-auto">
+        <div className="w-72 flex-shrink-0 px-6 py-6 border-r border-hack-border bg-hack-surface/30 fixed left-0 top-0 h-screen overflow-y-auto z-40">
           <div className="flex flex-col space-y-2 h-full">
             {/* Logo */}
             <div className="mb-8">
@@ -172,7 +172,7 @@ export const Header = () => {
         </div>
 
         {/* Channel header */}
-        <div className="flex-1 border-b border-hack-border bg-hack-surface/50">
+        <div className="flex-1 border-b border-hack-border bg-hack-surface/50 fixed top-0 left-72 right-0 z-30">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">

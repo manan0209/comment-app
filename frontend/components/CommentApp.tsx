@@ -122,11 +122,8 @@ export const CommentApp = () => {
     <div className="min-h-screen bg-hack-bg">
       <Header />
       
-      {/* Main content area that works alongside the header */}
-      <div className="flex">
-        {/* Left spacer for header sidebar */}
-        <div className="w-72 flex-shrink-0" />
-        
+      {/* Main content area - account for fixed header and sidebar */}
+      <div className="flex pt-24 pl-72">
         {/* Messages section */}
         <div className="flex-1 min-w-0 border-r border-hack-border">
           {/* Message composer */}
